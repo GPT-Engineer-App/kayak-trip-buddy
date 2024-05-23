@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, VStack, Box, Heading, Text } from "@chakra-ui/react";
 import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
@@ -18,12 +18,24 @@ const customIcon = new L.Icon({
 
 const Index = () => {
   const [routeLength, setRouteLength] = useState(0);
+  const [route, setRoute] = useState([]);
+
+  useEffect(() => {
+    const savedRoute = localStorage.getItem("kayakingRoute");
+    if (savedRoute) {
+      setRoute(JSON.parse(savedRoute));
+    }
+  }, []);
 
   const handleDrawCreated = (e) => {
     const layer = e.layer;
     const length = L.GeometryUtil.length(layer.getLatLngs());
     setRouteLength(length / 1000); // Convert to kilometers
+    const latLngs = layer.getLatLngs();
+    setRoute(latLngs);
+    localStorage.setItem("kayakingRoute", JSON.stringify(latLngs));
   };
+
   return (
     <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center" p={4}>
       <VStack spacing={4} width="100%">
@@ -47,6 +59,9 @@ const Index = () => {
                   polyline: true,
                 }}
               />
+              {route.length > 0 && (
+                <L.polyline positions={route} />
+              )}
             </FeatureGroup>
           </MapContainer>
         </Box>
