@@ -19,12 +19,12 @@ const Index = () => {
       <VStack spacing={4} width="100%">
         <Heading as="h1" size="2xl" textAlign="center">Kayaking Trip Planner</Heading>
         <Box width="100%" height="100vh" bg="gray.200" borderRadius="md" display="flex" justifyContent="center" alignItems="center">
-          <MapContainer center={[59.292, 18.619]} zoom={13} style={{ height: "100%", width: "100%" }}>
+          <MapContainer center={[59.3706, 18.6984]} zoom={13} style={{ height: "100%", width: "100%" }}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            <Marker position={[59.292, 18.619]} icon={customIcon}>
+            <Marker position={[59.3706, 18.6984]} icon={customIcon}>
               <Popup>
                 Sollenkroka - Starting Point
               </Popup>
