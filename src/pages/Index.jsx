@@ -1,7 +1,10 @@
 import { Container, VStack, Box, Heading } from "@chakra-ui/react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { useState } from "react";
+import { EditControl } from "react-leaflet-draw";
+import "leaflet-draw/dist/leaflet.draw.css";
 
 // Custom icon for the marker
 const customIcon = new L.Icon({
@@ -14,6 +17,37 @@ const customIcon = new L.Icon({
 });
 
 const Index = () => {
+  const [route, setRoute] = useState([]);
+  const [routeLength, setRouteLength] = useState(0);
+
+  const calculateRouteLength = (latlngs) => {
+    let length = 0;
+    for (let i = 1; i < latlngs.length; i++) {
+      length += latlngs[i - 1].distanceTo(latlngs[i]);
+    }
+    return length / 1000; // Convert to kilometers
+  };
+
+  const onCreated = (e) => {
+    const { layer } = e;
+    const latlngs = layer.getLatLngs();
+    setRoute(latlngs);
+    setRouteLength(calculateRouteLength(latlngs));
+  };
+
+  const onEdited = (e) => {
+    const { layers } = e;
+    layers.eachLayer((layer) => {
+      const latlngs = layer.getLatLngs();
+      setRoute(latlngs);
+      setRouteLength(calculateRouteLength(latlngs));
+    });
+  };
+
+  const onDeleted = () => {
+    setRoute([]);
+    setRouteLength(0);
+  };
   return (
     <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center" p={4}>
       <VStack spacing={4} width="100%">
@@ -29,7 +63,24 @@ const Index = () => {
                 Sollenkroka - Starting Point
               </Popup>
             </Marker>
+          <EditControl
+              position="topright"
+              onCreated={onCreated}
+              onEdited={onEdited}
+              onDeleted={onDeleted}
+              draw={{
+                rectangle: false,
+                circle: false,
+                circlemarker: false,
+                marker: false,
+                polygon: false,
+              }}
+            />
+            {route.length > 0 && <Polyline positions={route} color="blue" />}
           </MapContainer>
+          <Box mt={4}>
+            <Heading as="h2" size="md">Route Length: {routeLength.toFixed(2)} km</Heading>
+          </Box>
         </Box>
       </VStack>
     </Container>
