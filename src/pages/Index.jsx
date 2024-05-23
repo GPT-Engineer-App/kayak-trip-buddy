@@ -1,20 +1,23 @@
-// Update this page (the content is just a fallback if you fail and example)
-// Use chakra-ui
-import { Container, Text, VStack } from "@chakra-ui/react";
-
-// Example of using react-icons
-// import { FaRocket } from "react-icons/fa";
-// <IconButton aria-label="Add" icon={<FaRocket />} size="lg" />; // IconButton would also have to be imported from chakra
+import { useEffect } from "react";
+import { Box } from "@chakra-ui/react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 const Index = () => {
-  return (
-    <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-      <VStack spacing={4}>
-        <Text fontSize="2xl">Your Blank Canvas</Text>
-        <Text>Chat with the agent to start making edits.</Text>
-      </VStack>
-    </Container>
-  );
+  useEffect(() => {
+    // Initialize the map
+    const map = L.map("map").setView([59.292, 18.619], 13);
+
+    // Set up the OpenStreetMap layer
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    // Add a marker at Sollenkroka
+    L.marker([59.292, 18.619]).addTo(map).bindPopup("Sollenkroka").openPopup();
+  }, []);
+
+  return <Box id="map" width="100vw" height="100vh" />;
 };
 
 export default Index;
