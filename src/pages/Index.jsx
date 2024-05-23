@@ -5,6 +5,7 @@ import { EditControl } from "react-leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import L from "leaflet";
+import 'leaflet-geometryutil';
 
 // Custom icon for the marker
 const customIcon = new L.Icon({
@@ -21,7 +22,8 @@ const Index = () => {
 
   const handleDrawCreated = (e) => {
     const layer = e.layer;
-    const length = L.GeometryUtil.length(layer.getLatLngs());
+    const latlngs = layer.getLatLngs();
+    const length = L.GeometryUtil.length(latlngs);
     setRouteLength(length / 1000); // Convert to kilometers
   };
   return (
