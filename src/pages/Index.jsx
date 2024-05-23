@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import 'leaflet-geometryutil';
 import { Container, VStack, Box, Heading, Text } from "@chakra-ui/react";
 import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
@@ -29,9 +30,9 @@ const Index = () => {
 
   const handleDrawCreated = (e) => {
     const layer = e.layer;
-    const length = L.GeometryUtil.length(layer.getLatLngs());
-    setRouteLength(length / 1000); // Convert to kilometers
     const latLngs = layer.getLatLngs();
+    const length = L.GeometryUtil.length(latLngs);
+    setRouteLength(length / 1000); // Convert to kilometers
     setRoute(latLngs);
     localStorage.setItem("kayakingRoute", JSON.stringify(latLngs));
   };
@@ -60,7 +61,7 @@ const Index = () => {
                 }}
               />
               {route.length > 0 && (
-                <L.polyline positions={route} />
+                <L.Polyline positions={route} />
               )}
             </FeatureGroup>
           </MapContainer>
